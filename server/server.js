@@ -6,7 +6,7 @@ import categoryRoute from "./routes/categoryRoute.js";
 import productRoute from "./routes/productRoute.js";
 import orderRoute from "./routes/orderRoute.js";
 import taxRoute from "./routes/taxRoute.js";
-
+import ReportRoute from "./routes/reportsRoute.js";
 import notfound from "./middlewares/notfound.js";
 import { ConnectDB } from "./config/db.js";
 import cors from "cors";
@@ -32,6 +32,7 @@ app.use("/api/v1/categories", categoryRoute);
 app.use("/api/v1/products", productRoute);
 app.use("/api/v1/orders", orderRoute);
 app.use("/api/v1/tax", taxRoute);
+app.use("/api/v1/dailySales", ReportRoute);
 
 // 404 Middleware
 //app.use(notfound);
