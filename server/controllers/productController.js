@@ -5,7 +5,12 @@ import cloudinary from "../config/cloudinary.js";
 // Get all products
 export const getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find({});
+    const products = await Product.find({ deleted: 0 }).sort({ createdAt: -1 });
+    if (!products) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
     return res.status(200).json({ success: true, products });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
@@ -16,7 +21,7 @@ export const getProducts = async (req, res, next) => {
 export const getProductById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const product = await Product.findById(id);
+    const product = await Product.findOne({ id, deleted: 0 });
     if (!product) {
       return res
         .status(404)
@@ -99,21 +104,28 @@ export const updateProduct = async (req, res, next) => {
   }
 };
 
-// Delete product by ID
-export const deleteProduct = async (req, res, next) => {
+// Soft delete product by ID
+export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedProduct = await Product.findByIdAndDelete(id);
 
-    if (!deletedProduct) {
+    const product = await Product.findByIdAndUpdate(
+      id,
+      { deleted: 1 },
+      { new: true }
+    );
+
+    if (!product) {
       return res
         .status(404)
         .json({ success: false, message: "Product not found" });
     }
 
-    return res
-      .status(200)
-      .json({ success: true, message: "Product deleted successfully" });
+    return res.status(200).json({
+      success: true,
+      message: "Product soft deleted successfully",
+      product,
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }

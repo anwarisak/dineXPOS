@@ -44,6 +44,11 @@ const productSchema = new mongoose.Schema(
       ref: "Category",
       required: true,
     },
+
+    deleted: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

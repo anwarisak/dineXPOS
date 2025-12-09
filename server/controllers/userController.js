@@ -4,7 +4,12 @@ import bcrypt from "bcrypt";
 // Get all users
 export const getUsers = async (req, res, next) => {
   try {
-    const users = await User.find({});
+    const users = await User.find({ deleted: 0 });
+    if (!users) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
     return res.status(200).json({ success: true, users });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
@@ -15,7 +20,7 @@ export const getUsers = async (req, res, next) => {
 export const getUserById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const user = await User.findById(id);
+    const user = await User.findOne({ _id: id, deleted: 0 });
     if (!user) {
       return res
         .status(404)
@@ -88,7 +93,8 @@ export const updateUser = async (req, res) => {
     }
     // Hash password if it's being updated
     if (req.body.password) {
-      req.body.password = await bcrypt.hash(req.body.password, 10);
+      const salt = await bcrypt.genSalt(12);
+      req.body.password = await bcrypt.hash(req.body.password, salt);
     }
 
     const updatedUser = await User.findByIdAndUpdate(id, req.body, {
@@ -109,7 +115,11 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const deletedUser = await User.findByIdAndDelete(id);
+    const deletedUser = await User.findByIdAndUpdate(
+      id,
+      { deleted: 0 },
+      { new: true }
+    );
 
     if (!deletedUser) {
       return res

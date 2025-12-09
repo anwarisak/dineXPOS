@@ -4,12 +4,34 @@ import Tax from "../models/taxModel.js";
 // Get all Orders
 export const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find({ deleted: 0 });
+    if (!orders) {
+      return res
+        .status(404)
+        .json({ success: false, message: "order not found" });
+    }
     res.status(200).json({ success: true, orders });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// Get Orders By id
+export const getOrdersById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const orders = await Order.findOne({ _id: id, deleted: 0 });
+    if (!orders) {
+      return res
+        .status(404)
+        .json({ success: false, message: "order not found" });
+    }
+    res.status(200).json({ success: true, orders });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // Create a new Order
 
 export const createOrder = async (req, res) => {

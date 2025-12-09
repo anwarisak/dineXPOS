@@ -27,7 +27,7 @@ ConnectDB();
 
 // Routes
 app.use("/api/v1/users", userRoute);
-app.use("/api/v1/login", loginRoute); // ✔ Correct
+app.use("/api/v1/login", loginRoute);
 app.use("/api/v1/categories", categoryRoute);
 app.use("/api/v1/products", productRoute);
 app.use("/api/v1/orders", orderRoute);
