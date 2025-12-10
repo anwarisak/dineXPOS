@@ -38,12 +38,6 @@ export const createProduct = async (req, res, next) => {
   try {
     const { name, description, price, image, sizes, addons, status, category } =
       req.body;
-
-    if (!name || !description || !price || !sizes || !category) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Please fill all required fields" });
-    }
     //image upload
     let result;
 

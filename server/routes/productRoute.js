@@ -7,11 +7,12 @@ import {
   deleteProduct,
 } from "../controllers/productController.js";
 import upload from "../middlewares/upload.js";
+import { productValidate } from "../middlewares/validate.js";
 
 const router = express.Router();
 router.get("/", getProducts);
 router.get("/:id", getProductById);
-router.post("/", upload.single("image"), createProduct);
+router.post("/", upload.single("image"), productValidate, createProduct);
 router.put("/:id", updateProduct);
 router.delete("/:id", deleteProduct);
 
