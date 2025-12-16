@@ -7,12 +7,13 @@ import productRoute from "./routes/productRoute.js";
 import orderRoute from "./routes/orderRoute.js";
 import taxRoute from "./routes/taxRoute.js";
 import ReportRoute from "./routes/reportsRoute.js";
-import notfound from "./middlewares/notfound.js";
 import { ConnectDB } from "./config/db.js";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import { protect } from "./middlewares/authMiddleware.js";
+import { authorizeRoles } from "./middlewares/roleMiddleware.js";
 
 const app = express();
-
 app.use(express.json());
 //Enable Cors
 app.use(
@@ -22,11 +23,13 @@ app.use(
   })
 );
 
+app.use(cookieParser());
+
 // Connect DB
 ConnectDB();
 
 // Routes
-app.use("/api/v1/users", userRoute);
+app.use("/api/v1/users", protect, authorizeRoles("admin", "user"), userRoute);
 app.use("/api/v1/login", loginRoute);
 app.use("/api/v1/categories", categoryRoute);
 app.use("/api/v1/products", productRoute);

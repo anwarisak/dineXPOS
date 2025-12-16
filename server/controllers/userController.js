@@ -97,7 +97,7 @@ export const updateUser = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
-
+// delete user
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;

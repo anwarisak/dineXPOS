@@ -1,4 +1,5 @@
 import User from "../models/userModel.js";
+import { generateToken } from "../utils/generateToken.js";
 
 export const login = async (req, res) => {
   try {
@@ -33,6 +34,14 @@ export const login = async (req, res) => {
         .status(401)
         .json({ success: false, message: "Incorrect password" });
     }
+
+    const token = generateToken(user);
+
+    res.cookie("token", token, {
+      httpOnly: true, // protects against XSS
+      secure: false, // change to true when using HTTPS
+      maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
+    });
 
     // Successful login
     return res.status(200).json({
