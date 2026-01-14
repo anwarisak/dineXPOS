@@ -31,7 +31,7 @@ app.use(cookieParser());
 ConnectDB();
 
 // Routes
-app.use("https://dinexpos.onrender.com/api/v1/users", userRoute);
+app.use("/api/v1/users", userRoute);
 app.use("/api/v1/login", loginRoute);
 app.use("/api/v1/categories", categoryRoute);
 app.use("/api/v1/products", productRoute);
