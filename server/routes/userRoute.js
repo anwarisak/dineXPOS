@@ -8,6 +8,7 @@ import {
   updateUser,
 } from "../controllers/userController.js";
 import { userValidate } from "../middlewares/validate.js";
+import { authorizeRoles } from "../middlewares/roleMiddleware.js";
 
 const router = express.Router();
 

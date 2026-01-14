@@ -3,13 +3,14 @@ import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 
 /**
- * Verify JWT and attach user to request
+ * Verify JWT from cookie and attach user to request
  */
 export const protect = async (req, res, next) => {
   try {
-    // Read token from cookies
+    // Ensure cookies exist (cookie-parser must be enabled)
     const token = req.cookies?.token;
 
+    // No token found
     if (!token) {
       return res.status(401).json({
         success: false,
@@ -20,10 +21,21 @@ export const protect = async (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Attach user to request
-    req.user = await User.findById(decoded.id).select("-password");
+    // Find user and exclude password
+    const user = await User.findById(decoded.id).select("-password");
 
-    next(); // continue
+    // User no longer exists
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User no longer exists",
+      });
+    }
+
+    // Attach user to request
+    req.user = user;
+
+    next(); // Proceed to next middleware
   } catch (error) {
     return res.status(401).json({
       success: false,

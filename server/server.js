@@ -16,12 +16,14 @@ import { authorizeRoles } from "./middlewares/roleMiddleware.js";
 const app = express();
 app.use(express.json());
 //Enable Cors
-app.use(
-  cors({
-    origin: "http://localhost:3000/",
-    credentials: true,
-  })
-);
+app.use(cors());
+
+// app.use(
+//   cors({
+//     origin: "http://localhost:3000/",
+//     credentials: true,
+//   })
+// );
 
 app.use(cookieParser());
 
@@ -29,7 +31,7 @@ app.use(cookieParser());
 ConnectDB();
 
 // Routes
-app.use("/api/v1/users", protect, authorizeRoles("admin", "user"), userRoute);
+app.use("https://dinexpos.onrender.com/api/v1/users", userRoute);
 app.use("/api/v1/login", loginRoute);
 app.use("/api/v1/categories", categoryRoute);
 app.use("/api/v1/products", productRoute);

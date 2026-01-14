@@ -1,12 +1,20 @@
 // middleware/roleMiddleware.js
 
 /**
- * Allow only specific roles
- * @param  {...string} roles
+ * Allow only specific roles to access a route
+ * @param {...string} roles - Allowed roles (e.g. "admin", "user")
  */
 export const authorizeRoles = (...roles) => {
   return (req, res, next) => {
-    // Check if user role is allowed
+    // Ensure user exists (protect middleware must run first)
+    if (!req.user || !req.user.role) {
+      return res.status(401).json({
+        success: false,
+        message: "Not authenticated",
+      });
+    }
+
+    // Check if user's role is allowed
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({
         success: false,
@@ -14,6 +22,6 @@ export const authorizeRoles = (...roles) => {
       });
     }
 
-    next(); // role allowed
+    next(); // Role allowed → continue
   };
 };

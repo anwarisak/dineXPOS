@@ -16,8 +16,12 @@ export const getDailySales = async (req, res) => {
     const DailySale = order.reduce((sum, order) => {
       return sum + order.total;
     }, 0);
-    
-    res.status(200).json({ success: true, message: DailySale.toFixed(2) });
+
+    res.status(200).json({
+      success: true,
+      message: "Today's total sales",
+      amout: DailySale.toFixed(2),
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

@@ -10,7 +10,13 @@ export const getUsers = async (req, res, next) => {
         .status(404)
         .json({ success: false, message: "User not found" });
     }
-    return res.status(200).json({ success: true, users });
+
+    res.status(200).json({
+      success: true,
+      count: users.length,
+      data: users,
+    });
+   // return res.status(200).json({ success: true, users });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
